@@ -60,6 +60,7 @@ TEST(Coast, when_there_is_free_harbor_then_findfreeHarbor_return_index_of_this_h
 {
 	Coast coast;
 	coast.addHarbor(std::make_unique<Harbor>(ContainerShip));
+	coast.addShip(Ship(ContainerShip, 10));
 	int index = coast.findFreeHarbor(ContainerShip);
 	EXPECT_EQ(index, 0);
 }
@@ -70,6 +71,7 @@ TEST(Coast, when_there_is_no_free_harbor_then_findfreeHarbor_return_minus_1)
 	coast->addHarbor(std::make_unique<Harbor>(ContainerShip));
 	Ship ship(ContainerShip, 10);
 	coast->addShip(ship);
+	coast->findFreeHarbor(ContainerShip);
 	std::thread load(&Coast::startLoading, coast, ship, 0);
 	std::this_thread::sleep_for(std::chrono::seconds(1));
 	load.detach();
