@@ -17,11 +17,7 @@ void createHarbors(ICoast& coast)
 	coast.addHarbor(std::make_unique<Harbor>(BulkCarrier));
 	coast.addHarbor(std::make_unique<Harbor>(TankerShip));
 	coast.addHarbor(std::make_unique<Harbor>(TankerShip));
-	coast.addHarbor(std::make_unique<Harbor>(RoRoShip));
 	coast.addHarbor(std::make_unique<Harbor>(OffshoreVessel));
-	coast.addHarbor(std::make_unique<Harbor>(OffshoreVessel));
-	coast.addHarbor(std::make_unique<Harbor>(FishingVessel));
-	coast.addHarbor(std::make_unique<Harbor>(FishingVessel));
 	coast.addHarbor(std::make_unique<Harbor>(FishingVessel));
 	coast.addHarbor(std::make_unique<Harbor>(FishingVessel));
 }

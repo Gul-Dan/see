@@ -4,7 +4,7 @@ const unsigned short amoutOfTypes = 6;
 
 enum ShipType
 {
-	ContainerShip, BulkCarrier, TankerShip, RoRoShip, OffshoreVessel, FishingVessel
+	ContainerShip, BulkCarrier, TankerShip, OffshoreVessel, FishingVessel
 };
 
 struct Ship

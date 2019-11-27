@@ -6,14 +6,12 @@ Coast::Coast()
 	harbors.emplace(ContainerShip, std::vector<std::unique_ptr<Harbor>>());
 	harbors.emplace(BulkCarrier, std::vector<std::unique_ptr<Harbor>>());
 	harbors.emplace(TankerShip, std::vector<std::unique_ptr<Harbor>>());
-	harbors.emplace(RoRoShip, std::vector<std::unique_ptr<Harbor>>());
 	harbors.emplace(OffshoreVessel, std::vector<std::unique_ptr<Harbor>>());
 	harbors.emplace(FishingVessel, std::vector<std::unique_ptr<Harbor>>());
 
 	ships.emplace(ContainerShip, std::queue<int>());
 	ships.emplace(BulkCarrier, std::queue<int>());
 	ships.emplace(TankerShip, std::queue<int>());
-	ships.emplace(RoRoShip, std::queue<int>());
 	ships.emplace(OffshoreVessel, std::queue<int>());
 	ships.emplace(FishingVessel, std::queue<int>());
 }
