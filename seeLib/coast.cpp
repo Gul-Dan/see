@@ -44,7 +44,6 @@ bool Coast::hasSpace(const ShipType& type) const
 void Coast::startLoading(const Ship& ship, int harbor)
 {
 	std::cout << "Start of loading " << shipTypeToString(ship.type) << ", capacity " << ship.capacity << "\n";
-	deleteShip(ship.type);
 	harbors.at(ship.type)[harbor]->load(ship);
 }
 
@@ -64,23 +63,23 @@ std::string Coast::shipTypeToString(const ShipType& type) const
 	case 2:
 		return "TankerShip";
 	case 3:
-		return "RoRoShip";
-	case 4:
 		return "OffshoreVessel";
-	case 5:
+	case 4:
 		return "FishingVessel";
 	}
 	return "";
 }
 
-int Coast::findFreeHarbor(const ShipType& type) const
+int Coast::findFreeHarbor(const ShipType& type)
 {
-	//todo: problem here. 2 threads can get same harbor
+	std::lock_guard<std::mutex> guard(loadingMutex);
 	int res = -1;
 	for (size_t i = 0; i < harbors.at(type).size(); i++)
 	{
 		if (!harbors.at(type)[i]->isLoading())
 		{
+			harbors.at(type)[i]->setIsLoading();
+			deleteShip(type);
 			res = i;
 			break;
 		}

@@ -19,7 +19,7 @@ public:
 	virtual bool addShip(const Ship&) = 0; //add ship from tunnel to harbor queue 'ships'
 	virtual bool hasSpace(const ShipType&) const = 0;
 	virtual void startLoading(const Ship&, int) = 0; //if harbor is free - send ship to it
-	virtual int findFreeHarbor(const ShipType&) const = 0; //finds harbor that is not loading - return its index or -1 otherwise
+	virtual int findFreeHarbor(const ShipType&) = 0; //finds harbor that is not loading - return its index or -1 otherwise
 	virtual void deleteShip(const ShipType&) = 0;
 	virtual void addHarbor(std::unique_ptr<Harbor>) = 0;
 };
@@ -37,7 +37,7 @@ public:
 	bool addShip(const Ship&) override;
 	bool hasSpace(const ShipType&) const override;
 	void startLoading(const Ship&, int) override;
-	int findFreeHarbor(const ShipType&) const override;
+	int findFreeHarbor(const ShipType&) override;
 	void deleteShip(const ShipType&) override;
 	void addHarbor(std::unique_ptr<Harbor>) override;
 	std::string shipTypeToString(const ShipType&) const;
