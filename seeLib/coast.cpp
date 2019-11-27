@@ -73,16 +73,15 @@ std::string Coast::shipTypeToString(const ShipType& type) const
 int Coast::findFreeHarbor(const ShipType& type)
 {
 	std::lock_guard<std::mutex> guard(loadingMutex);
-	int res = -1;
 	for (size_t i = 0; i < harbors.at(type).size(); i++)
 	{
 		if (!harbors.at(type)[i]->isLoading())
 		{
 			harbors.at(type)[i]->setIsLoading();
 			deleteShip(type);
-			res = i;
-			break;
+			return i;
 		}
 	}
-	return res;
+	std::cout << "Can't start loading " << shipTypeToString(type) << " - all harbors are busy!\n";
+	return -1;
 }
