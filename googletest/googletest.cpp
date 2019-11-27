@@ -14,7 +14,7 @@ public:
 	MOCK_METHOD1(addShip, bool(const Ship&));
 	MOCK_CONST_METHOD1(hasSpace, bool(const ShipType&));
 	MOCK_METHOD2(startLoading, void(const Ship&, int));
-	MOCK_CONST_METHOD1(findFreeHarbor, int(const ShipType&));
+	MOCK_METHOD1(findFreeHarbor, int(const ShipType&));
 	MOCK_METHOD1(deleteShip, void(const ShipType&));
 	MOCK_METHOD1(addHarbor, void(std::unique_ptr<Harbor>));
 };

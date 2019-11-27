@@ -25,7 +25,7 @@ void createHarbors(ICoast& coast)
 void shipManager(ICoast& coast, ITunnel& tunnel)
 {
 	auto ship = tunnel.sendShip(coast);
-	int harbor;
+	unsigned harbor;
 	while ((harbor = coast.findFreeHarbor(ship.type)) == -1)
 	{
 		std::this_thread::sleep_for(std::chrono::seconds(10));

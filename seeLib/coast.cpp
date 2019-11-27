@@ -79,7 +79,7 @@ int Coast::findFreeHarbor(const ShipType& type)
 		{
 			harbors.at(type)[i]->setIsLoading();
 			deleteShip(type);
-			return i;
+			return static_cast<int>(i);
 		}
 	}
 	std::cout << "Can't start loading " << shipTypeToString(type) << " - all harbors are busy!\n";
