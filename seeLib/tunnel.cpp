@@ -3,12 +3,14 @@
 
 Ship Tunnel::sendShip(ICoast& coast)
 {
-	Ship ship = ships.front();
+	std::lock_guard<std::mutex> guard(sendShipMutex);
+	Ship ship(ContainerShip, 0);
 	std::this_thread::sleep_for(std::chrono::seconds(1));
 	if (ships.size())
 	{
-		if (coast.addShip(ship))
+		if (coast.addShip(ships.front()))
 		{
+			ship = ships.front();
 			ships.pop();
 		}
 	}
@@ -17,6 +19,7 @@ Ship Tunnel::sendShip(ICoast& coast)
 
 bool Tunnel::addShip(const Ship& ship)
 {
+	std::lock_guard<std::mutex> guard(addShipMutex);
 	if (hasSpace())
 	{
 		ships.push(ship);

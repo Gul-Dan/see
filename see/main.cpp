@@ -8,27 +8,18 @@
 #include "tunnel.h"
 #include "generator.h"
 
-void createHarbors(ICoast& coast)
-{
-	coast.addHarbor(std::make_unique<Harbor>(ContainerShip));
-	coast.addHarbor(std::make_unique<Harbor>(ContainerShip));
-	coast.addHarbor(std::make_unique<Harbor>(BulkCarrier));
-	coast.addHarbor(std::make_unique<Harbor>(BulkCarrier));
-	coast.addHarbor(std::make_unique<Harbor>(BulkCarrier));
-	coast.addHarbor(std::make_unique<Harbor>(TankerShip));
-	coast.addHarbor(std::make_unique<Harbor>(TankerShip));
-	coast.addHarbor(std::make_unique<Harbor>(OffshoreVessel));
-	coast.addHarbor(std::make_unique<Harbor>(FishingVessel));
-	coast.addHarbor(std::make_unique<Harbor>(FishingVessel));
-}
-
-void shipManager(ICoast& coast, ITunnel& tunnel)
+static void shipManager(ICoast& coast, ITunnel& tunnel)
 {
 	auto ship = tunnel.sendShip(coast);
+	while (!ship.capacity)
+	{
+		std::this_thread::sleep_for(std::chrono::seconds(3));
+		ship = tunnel.sendShip(coast);
+	}
 	unsigned harbor;
 	while ((harbor = coast.findFreeHarbor(ship.type)) == -1)
 	{
-		std::this_thread::sleep_for(std::chrono::seconds(10));
+		std::this_thread::sleep_for(std::chrono::seconds(3));
 	}
 	coast.startLoading(ship, harbor);
 }
@@ -48,7 +39,7 @@ int main()
 			manager.detach();
 		}
 		srand((unsigned)time(nullptr));
-		int time = (rand() % 5 + 1); //from 1 to 5
+		int time = (rand() % 5 + 1) * 1;
 		std::this_thread::sleep_for(std::chrono::seconds(time));
 	}
 
