@@ -17,6 +17,8 @@ class Tunnel : public ITunnel
 {
 	std::queue<Ship> ships;
 	const unsigned short spaceLimit = 5;
+	std::mutex sendShipMutex;
+	std::mutex addShipMutex;
 
 public:
 	Ship sendShip(ICoast&) override;

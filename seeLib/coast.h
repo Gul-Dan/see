@@ -16,7 +16,8 @@ class ICoast
 {
 public:
 	virtual ~ICoast() {}
-	virtual bool addShip(const Ship&) = 0; //add ship from tunnel to harbor queue 'ships'
+	//add ship from tunnel to harbor queue 'ships'
+	virtual bool addShip(const Ship&) = 0; 
 	virtual bool hasSpace(const ShipType&) const = 0;
 	virtual void startLoading(const Ship&, int) = 0; //if harbor is free - send ship to it
 	virtual int findFreeHarbor(const ShipType&) = 0; //finds harbor that is not loading - return its index or -1 otherwise

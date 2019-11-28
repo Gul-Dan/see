@@ -6,7 +6,19 @@ Ship generate()
 {
 	srand((unsigned)time(nullptr));
 	ShipType type = static_cast<ShipType>(rand() % 5); //from 0 to 4
-	int capacity = (rand() % 10 + 1) * 10; //10, 20, 30, ..., 100
+	int capacity = (rand() % 5 + 1) * 3;
 
 	return Ship(type, capacity);
+}
+
+void createHarbors(ICoast& coast)
+{
+	coast.addHarbor(std::make_unique<Harbor>(ContainerShip));
+	coast.addHarbor(std::make_unique<Harbor>(ContainerShip));
+	coast.addHarbor(std::make_unique<Harbor>(BulkCarrier));
+	coast.addHarbor(std::make_unique<Harbor>(TankerShip));
+	coast.addHarbor(std::make_unique<Harbor>(TankerShip));
+	coast.addHarbor(std::make_unique<Harbor>(OffshoreVessel));
+	coast.addHarbor(std::make_unique<Harbor>(FishingVessel));
+	coast.addHarbor(std::make_unique<Harbor>(FishingVessel));
 }
