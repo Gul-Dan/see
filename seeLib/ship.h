@@ -7,11 +7,13 @@ enum ShipType
 	ContainerShip, BulkCarrier, TankerShip, OffshoreVessel, FishingVessel
 };
 
+//todo: what is ship intended use?
 struct Ship
 {
 	Ship(ShipType type, unsigned int capacity)
 		: type(type),
 		capacity(capacity)
+		// todo: which indent is recommended? can I comment 1 row from initialization list?
 	{
 	}
 	int capacity;

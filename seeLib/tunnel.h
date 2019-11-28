@@ -5,6 +5,7 @@
 #include "ship.h"
 
 //stores ships from generator
+// todo: why from generator?
 class ITunnel
 {
 public:
@@ -16,7 +17,7 @@ public:
 class Tunnel : public ITunnel
 {
 	std::queue<Ship> ships;
-	const unsigned short spaceLimit = 5;
+	const unsigned short spaceLimit = 5; // todo: why it's not parametrized
 
 public:
 	Ship sendShip(ICoast&) override;
