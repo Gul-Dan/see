@@ -3,6 +3,7 @@
 
 Ship Tunnel::sendShip(ICoast& coast)
 {
+	//todo
 	std::lock_guard<std::mutex> guard(sendShipMutex);
 	Ship ship(ContainerShip, 0);
 	std::this_thread::sleep_for(std::chrono::seconds(1));

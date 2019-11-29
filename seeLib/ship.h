@@ -7,7 +7,7 @@ enum ShipType
 	ContainerShip, BulkCarrier, TankerShip, OffshoreVessel, FishingVessel
 };
 
-//todo: what is ship intended use?
+//stores type and capacity of ship
 struct Ship
 {
 	Ship(ShipType type, unsigned int capacity)
