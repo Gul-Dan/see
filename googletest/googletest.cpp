@@ -1,6 +1,3 @@
-// googletest.cpp : Defines the entry point for the console application.
-//
-
 #include "stdafx.h"
 #include "generator.h"
 #include "harbor.h"
@@ -22,6 +19,55 @@ public:
 //todo: TEST(Harbor) TEST(Generator)
 //TEST(Generator, check_that_different_ships_are_generated)
 
+static void shipManager(ICoast& coast, ITunnel& tunnel)
+{
+	auto ship = tunnel.sendShip(coast);
+	while (!ship.capacity)
+	{
+		std::this_thread::sleep_for(std::chrono::seconds(1));
+		ship = tunnel.sendShip(coast);
+	}
+	unsigned harbor;
+	while ((harbor = coast.findFreeHarbor(ship.type)) == -1)
+	{
+		std::this_thread::sleep_for(std::chrono::seconds(1));
+	}
+	coast.startLoading(ship, harbor);
+}
+
+Ship custom_generator()
+{
+	srand((unsigned)time(nullptr));
+	ShipType type = static_cast<ShipType>(rand() % 5); //from 0 to 4
+
+	return Ship(type, 1);
+}
+
+TEST(load, when_1000_ships_are_generated_then_no_exception)
+{
+	Tunnel tunnel;
+	Coast coast;
+	createHarbors(coast);
+	int testNumber = 10000;
+
+	for (int i = 0; i < testNumber; i++)
+	{
+		if (tunnel.addShip(custom_generator()))
+		{
+			std::cout << "Generated new ship! Starting ship manager...\n";
+			std::thread manager(shipManager, std::ref(coast), std::ref(tunnel));
+			if (i == testNumber - 1)
+			{
+				manager.join();
+			}
+			else
+			{
+				manager.detach();
+			}
+		}
+	}
+	SUCCEED();
+}
 
 TEST(Tunnel, when_sendShip_is_called_then_Coast_addShip_is_called_once)
 {
