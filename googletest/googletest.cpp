@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "generator.h"
+#include "manager.h"
 #include "harbor.h"
 #include "coast.h"
 #include "tunnel.h"
@@ -8,6 +8,10 @@
 class CoastMock : public ICoast
 {
 public:
+	CoastMock(const unsigned space)
+		: ICoast(space)
+	{
+	}
 	MOCK_METHOD1(addShip, bool(const Ship&));
 	MOCK_CONST_METHOD1(hasSpace, bool(const ShipType&));
 	MOCK_METHOD2(startLoading, void(const Ship&, int));
@@ -19,23 +23,7 @@ public:
 //todo: TEST(Harbor) TEST(Generator)
 //TEST(Generator, check_that_different_ships_are_generated)
 
-static void shipManager(ICoast& coast, ITunnel& tunnel)
-{
-	auto ship = tunnel.sendShip(coast);
-	while (!ship.capacity)
-	{
-		std::this_thread::sleep_for(std::chrono::seconds(1));
-		ship = tunnel.sendShip(coast);
-	}
-	unsigned harbor;
-	while ((harbor = coast.findFreeHarbor(ship.type)) == -1)
-	{
-		std::this_thread::sleep_for(std::chrono::seconds(1));
-	}
-	coast.startLoading(ship, harbor);
-}
-
-Ship custom_generator()
+Ship generate()
 {
 	srand((unsigned)time(nullptr));
 	ShipType type = static_cast<ShipType>(rand() % 5); //from 0 to 4
@@ -43,37 +31,46 @@ Ship custom_generator()
 	return Ship(type, 1);
 }
 
+void createHarbors(ICoast& coast)
+{
+	coast.addHarbor(std::make_unique<Harbor>(ContainerShip));
+	coast.addHarbor(std::make_unique<Harbor>(ContainerShip));
+	coast.addHarbor(std::make_unique<Harbor>(BulkCarrier));
+	coast.addHarbor(std::make_unique<Harbor>(TankerShip));
+	coast.addHarbor(std::make_unique<Harbor>(TankerShip));
+	coast.addHarbor(std::make_unique<Harbor>(OffshoreVessel));
+	coast.addHarbor(std::make_unique<Harbor>(FishingVessel));
+	coast.addHarbor(std::make_unique<Harbor>(FishingVessel));
+	coast.addHarbor(std::make_unique<Harbor>(ContainerShip));
+	coast.addHarbor(std::make_unique<Harbor>(ContainerShip));
+	coast.addHarbor(std::make_unique<Harbor>(BulkCarrier));
+	coast.addHarbor(std::make_unique<Harbor>(TankerShip));
+	coast.addHarbor(std::make_unique<Harbor>(TankerShip));
+	coast.addHarbor(std::make_unique<Harbor>(OffshoreVessel));
+	coast.addHarbor(std::make_unique<Harbor>(FishingVessel));
+	coast.addHarbor(std::make_unique<Harbor>(FishingVessel));
+}
+
 TEST(load, when_1000_ships_are_generated_then_no_exception)
 {
-	Tunnel tunnel;
-	Coast coast;
+	Tunnel tunnel(5);
+	Coast coast(3);
 	createHarbors(coast);
-	int testNumber = 10000;
+	int testNumber = 1000;
 
 	for (int i = 0; i < testNumber; i++)
 	{
-		if (tunnel.addShip(custom_generator()))
-		{
-			std::cout << "Generated new ship! Starting ship manager...\n";
-			std::thread manager(shipManager, std::ref(coast), std::ref(tunnel));
-			if (i == testNumber - 1)
-			{
-				manager.join();
-			}
-			else
-			{
-				manager.detach();
-			}
-		}
+		generatorManager(coast, tunnel, 1);
 	}
+	std::this_thread::sleep_for(std::chrono::seconds(100));
 	SUCCEED();
 }
 
 TEST(Tunnel, when_sendShip_is_called_then_Coast_addShip_is_called_once)
 {
-	CoastMock coast;
+	CoastMock coast(3);
 	
-	Tunnel tunnel;
+	Tunnel tunnel(5);
 	Ship ship(FishingVessel, 50);
 
 	EXPECT_CALL(coast, addShip(testing::_))
@@ -85,7 +82,7 @@ TEST(Tunnel, when_sendShip_is_called_then_Coast_addShip_is_called_once)
 
 TEST(Tunnel, when_Tunnel_queue_is_full_then_addShip_returns_false)
 {
-	Tunnel tunnel;
+	Tunnel tunnel(5);
 	int spaceLimit = 5;
 	for (int i = 0; i < spaceLimit; i++)
 	{
@@ -96,7 +93,7 @@ TEST(Tunnel, when_Tunnel_queue_is_full_then_addShip_returns_false)
 
 TEST(Coast, when_addShip_deleteShip_addShip_then_no_exceptions_are_thrown)
 {
-	Coast coast;
+	Coast coast(3);
 	coast.addShip(Ship(ContainerShip, 50));
 	coast.deleteShip(ContainerShip);
 	EXPECT_NO_THROW(coast.addShip(Ship(ContainerShip, 80)));
@@ -104,7 +101,7 @@ TEST(Coast, when_addShip_deleteShip_addShip_then_no_exceptions_are_thrown)
 
 TEST(Coast, when_there_is_free_harbor_then_findfreeHarbor_return_index_of_this_harbor)
 {
-	Coast coast;
+	Coast coast(3);
 	coast.addHarbor(std::make_unique<Harbor>(ContainerShip));
 	coast.addShip(Ship(ContainerShip, 10));
 	int index = coast.findFreeHarbor(ContainerShip);
@@ -113,7 +110,7 @@ TEST(Coast, when_there_is_free_harbor_then_findfreeHarbor_return_index_of_this_h
 
 TEST(Coast, when_there_is_no_free_harbor_then_findfreeHarbor_return_minus_1)
 {
-	std::shared_ptr<Coast> coast = std::make_shared<Coast>();
+	std::shared_ptr<Coast> coast = std::make_shared<Coast>(3);
 	coast->addHarbor(std::make_unique<Harbor>(ContainerShip));
 	Ship ship(ContainerShip, 10);
 	coast->addShip(ship);
@@ -127,7 +124,7 @@ TEST(Coast, when_there_is_no_free_harbor_then_findfreeHarbor_return_minus_1)
 
 TEST(Coast, when_Coast_queue_is_full_then_addShip_returns_false)
 {
-	Coast coast;
+	Coast coast(3);
 	int spaceLimit = 3;
 	for (int i = 0; i < spaceLimit; i++)
 	{

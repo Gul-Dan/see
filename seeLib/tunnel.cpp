@@ -1,6 +1,11 @@
 #include "stdafx.h"
 #include "tunnel.h"
 
+Tunnel::Tunnel(const unsigned space)
+	: spaceLimit(space)
+{
+}
+
 Ship Tunnel::sendShip(ICoast& coast)
 {
 	//todo

@@ -1,7 +1,8 @@
 #include "stdafx.h"
 #include "coast.h"
 
-Coast::Coast()
+Coast::Coast(const unsigned space)
+	: spaceLimit(space)
 {
 	harbors.emplace(ContainerShip, std::vector<std::unique_ptr<Harbor>>());
 	harbors.emplace(BulkCarrier, std::vector<std::unique_ptr<Harbor>>());
@@ -23,7 +24,7 @@ void Coast::addHarbor(std::unique_ptr<Harbor> harbor)
 
 bool Coast::addShip(const Ship& ship)
 {
-	std::lock_guard<std::mutex> guard(addShipMutex);
+	std::lock_guard<std::mutex> guard(shipsMutex);
 	if (hasSpace(ship.type))
 	{
 		ships.at(ship.type).push(ship.capacity);
@@ -38,6 +39,7 @@ bool Coast::addShip(const Ship& ship)
 
 bool Coast::hasSpace(const ShipType& type) const
 {
+	std::lock_guard<std::mutex> guard(shipsMutex);
 	return !(ships.at(type).size() == spaceLimit);
 }
 
@@ -49,6 +51,7 @@ void Coast::startLoading(const Ship& ship, int harbor)
 
 void Coast::deleteShip(const ShipType& type)
 {
+	std::lock_guard<std::mutex> guard(shipsMutex);
 	ships.at(type).pop();
 }
 
@@ -72,7 +75,6 @@ std::string Coast::shipTypeToString(const ShipType& type) const
 
 int Coast::findFreeHarbor(const ShipType& type)
 {
-	std::lock_guard<std::mutex> guard(loadingMutex);
 	for (size_t i = 0; i < harbors.at(type).size(); i++)
 	{
 		if (!harbors.at(type)[i]->isLoading())

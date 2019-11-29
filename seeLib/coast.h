@@ -15,12 +15,16 @@ typedef std::map<ShipType, std::queue<int>> shipMap;
 class ICoast
 {
 public:
+	ICoast() {}
+	ICoast(const unsigned) {}
 	virtual ~ICoast() {}
 	//add ship from tunnel to harbor queue 'ships'
 	virtual bool addShip(const Ship&) = 0; 
 	virtual bool hasSpace(const ShipType&) const = 0;
-	virtual void startLoading(const Ship&, int) = 0; //if harbor is free - send ship to it
-	virtual int findFreeHarbor(const ShipType&) = 0; //finds harbor that is not loading - return its index or -1 otherwise
+	//if harbor is free - send ship to it
+	virtual void startLoading(const Ship&, int) = 0;
+	//finds harbor that is not loading - return its index or -1 otherwise
+	virtual int findFreeHarbor(const ShipType&) = 0;
 	virtual void deleteShip(const ShipType&) = 0;
 	virtual void addHarbor(std::unique_ptr<Harbor>) = 0;
 };
@@ -29,12 +33,11 @@ class Coast : public ICoast
 {
 	shipMap ships;
 	harborMap harbors;
-	const unsigned short spaceLimit = 3;
-	std::mutex addShipMutex;
-	std::mutex loadingMutex;
+	const unsigned spaceLimit;
+	mutable std::mutex shipsMutex;
 
 public:
-	Coast();
+	Coast(const unsigned);
 	bool addShip(const Ship&) override;
 	bool hasSpace(const ShipType&) const override;
 	void startLoading(const Ship&, int) override;

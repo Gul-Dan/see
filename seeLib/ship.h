@@ -1,6 +1,6 @@
 #pragma once
 
-const unsigned short amoutOfTypes = 6;
+const unsigned amoutOfTypes = 5;
 
 enum ShipType
 {
@@ -11,9 +11,8 @@ enum ShipType
 struct Ship
 {
 	Ship(ShipType type, unsigned int capacity)
-		: type(type),
-		capacity(capacity)
-		// todo: which indent is recommended? can I comment 1 row from initialization list?
+		: type(type)
+		, capacity(capacity)
 	{
 	}
 	int capacity;

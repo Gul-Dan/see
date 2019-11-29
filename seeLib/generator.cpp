@@ -5,8 +5,7 @@
 Ship generate()
 {
 	srand((unsigned)time(nullptr));
-	//todo: what is 5? What if ShipType will be increased?
-	ShipType type = static_cast<ShipType>(rand() % 5); //from 0 to 4
+	ShipType type = static_cast<ShipType>(rand() % amoutOfTypes); //from 0 to 4
 	int capacity = (rand() % 5 + 1) * 3;
 
 	return Ship(type, capacity);
