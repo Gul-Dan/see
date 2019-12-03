@@ -32,6 +32,11 @@ static void createHarbors(ICoast& coast)
 	coast.addHarbor(std::make_unique<Harbor>(FishingVessel));
 }
 
+static Ship generate()
+{
+	return Ship(ContainerShip, 1);
+}
+
 TEST(load, when_1000_ships_are_generated_then_no_exception)
 {
 	Tunnel tunnel(5);
