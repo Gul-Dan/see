@@ -20,27 +20,8 @@ public:
 	MOCK_METHOD1(addHarbor, void(std::unique_ptr<Harbor>));
 };
 
-//todo: TEST(Harbor) TEST(Generator)
-//TEST(Generator, check_that_different_ships_are_generated)
-
-Ship generate()
+static void createHarbors(ICoast& coast)
 {
-	srand((unsigned)time(nullptr));
-	ShipType type = static_cast<ShipType>(rand() % 5); //from 0 to 4
-
-	return Ship(type, 1);
-}
-
-void createHarbors(ICoast& coast)
-{
-	coast.addHarbor(std::make_unique<Harbor>(ContainerShip));
-	coast.addHarbor(std::make_unique<Harbor>(ContainerShip));
-	coast.addHarbor(std::make_unique<Harbor>(BulkCarrier));
-	coast.addHarbor(std::make_unique<Harbor>(TankerShip));
-	coast.addHarbor(std::make_unique<Harbor>(TankerShip));
-	coast.addHarbor(std::make_unique<Harbor>(OffshoreVessel));
-	coast.addHarbor(std::make_unique<Harbor>(FishingVessel));
-	coast.addHarbor(std::make_unique<Harbor>(FishingVessel));
 	coast.addHarbor(std::make_unique<Harbor>(ContainerShip));
 	coast.addHarbor(std::make_unique<Harbor>(ContainerShip));
 	coast.addHarbor(std::make_unique<Harbor>(BulkCarrier));
@@ -60,9 +41,41 @@ TEST(load, when_1000_ships_are_generated_then_no_exception)
 
 	for (int i = 0; i < testNumber; i++)
 	{
-		generatorManager(coast, tunnel, 1);
+		generatorManager(coast, tunnel, 0);
 	}
-	std::this_thread::sleep_for(std::chrono::seconds(100));
+	std::this_thread::sleep_for(std::chrono::seconds(44));
+	
+	SUCCEED();
+}
+
+void function1(Tunnel& tunnel)
+{
+	for (int i = 0; i < 100; i++)
+	{
+		tunnel.addShip(generate());
+	}
+}
+
+void function2(Tunnel& tunnel, Coast& coast)
+{
+	for (int i = 0; i < 100; i++)
+	{
+		tunnel.sendShip(coast);
+	}
+}
+
+TEST(mutex, WhenTwoFunctionsAreCalledImmediatelyThenNoException)
+{
+	Tunnel tunnel(5);
+	Coast coast(3);
+	createHarbors(coast);
+
+	std::thread thread1(function1, std::ref(tunnel));
+	std::thread thread2(function2, std::ref(tunnel), std::ref(coast));
+	thread1.detach();
+	thread2.detach();
+	std::this_thread::sleep_for(std::chrono::seconds(3));
+
 	SUCCEED();
 }
 

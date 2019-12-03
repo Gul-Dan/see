@@ -9,9 +9,8 @@ Tunnel::Tunnel(const unsigned space)
 Ship Tunnel::sendShip(ICoast& coast)
 {
 	//todo
-	std::lock_guard<std::mutex> guard(sendShipMutex);
+	std::lock_guard<std::mutex> guard(shipsMutex);
 	Ship ship(ContainerShip, 0);
-	std::this_thread::sleep_for(std::chrono::seconds(1));
 	if (ships.size())
 	{
 		if (coast.addShip(ships.front()))
@@ -23,22 +22,14 @@ Ship Tunnel::sendShip(ICoast& coast)
 	return ship;
 }
 
-bool Tunnel::addShip(const Ship& ship)
+void Tunnel::addShip(const Ship& ship)
 {
-	std::lock_guard<std::mutex> guard(addShipMutex);
-	if (hasSpace())
-	{
-		ships.push(ship);
-		return true;
-	}
-	else
-	{
-		std::cout << "Can't add new ship - Tunnel queue is full!\n";
-	}
-	return false;
+	std::lock_guard<std::mutex> guard(shipsMutex);
+	ships.push(ship);
 }
 
 bool Tunnel::hasSpace() const
 {
+	//todo: should we add mutex ahead?
 	return !(ships.size() == spaceLimit);
 }
