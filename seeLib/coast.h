@@ -35,6 +35,7 @@ class Coast : public ICoast
 	harborMap harbors;
 	const unsigned spaceLimit;
 	mutable std::mutex shipsMutex;
+	std::mutex loadingMutex;
 
 public:
 	Coast(const unsigned);

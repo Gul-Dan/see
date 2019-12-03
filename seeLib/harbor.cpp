@@ -15,7 +15,6 @@ void Harbor::load(const Ship& ship)
 
 bool Harbor::isLoading() const
 {
-	std::lock_guard<std::mutex> guard(isLoadingMutex);
 	return isLoading_;
 }
 
@@ -26,7 +25,6 @@ ShipType Harbor::getType() const
 
 void Harbor::setIsLoading(bool value)
 {
-	std::lock_guard<std::mutex> guard(isLoadingMutex);
 	isLoading_ = value;
 }
 

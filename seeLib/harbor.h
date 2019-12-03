@@ -20,7 +20,6 @@ class Harbor : public IHarbor
 	//todo: atomic object
 	bool isLoading_;
 	ShipType type;
-	mutable std::mutex isLoadingMutex;
 
 	void setIsLoading(bool value);
 

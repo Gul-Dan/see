@@ -24,33 +24,36 @@ static void createHarbors(ICoast& coast)
 {
 	coast.addHarbor(std::make_unique<Harbor>(ContainerShip));
 	coast.addHarbor(std::make_unique<Harbor>(ContainerShip));
+	coast.addHarbor(std::make_unique<Harbor>(ContainerShip));
+	coast.addHarbor(std::make_unique<Harbor>(ContainerShip));
+	coast.addHarbor(std::make_unique<Harbor>(ContainerShip));
+	coast.addHarbor(std::make_unique<Harbor>(BulkCarrier));
+	coast.addHarbor(std::make_unique<Harbor>(BulkCarrier));
+	coast.addHarbor(std::make_unique<Harbor>(BulkCarrier));
+	coast.addHarbor(std::make_unique<Harbor>(BulkCarrier));
 	coast.addHarbor(std::make_unique<Harbor>(BulkCarrier));
 	coast.addHarbor(std::make_unique<Harbor>(TankerShip));
 	coast.addHarbor(std::make_unique<Harbor>(TankerShip));
+	coast.addHarbor(std::make_unique<Harbor>(TankerShip));
+	coast.addHarbor(std::make_unique<Harbor>(TankerShip));
+	coast.addHarbor(std::make_unique<Harbor>(TankerShip));
 	coast.addHarbor(std::make_unique<Harbor>(OffshoreVessel));
+	coast.addHarbor(std::make_unique<Harbor>(OffshoreVessel));
+	coast.addHarbor(std::make_unique<Harbor>(OffshoreVessel));
+	coast.addHarbor(std::make_unique<Harbor>(OffshoreVessel));
+	coast.addHarbor(std::make_unique<Harbor>(OffshoreVessel));
+	coast.addHarbor(std::make_unique<Harbor>(FishingVessel));
+	coast.addHarbor(std::make_unique<Harbor>(FishingVessel));
+	coast.addHarbor(std::make_unique<Harbor>(FishingVessel));
 	coast.addHarbor(std::make_unique<Harbor>(FishingVessel));
 	coast.addHarbor(std::make_unique<Harbor>(FishingVessel));
 }
 
 static Ship generate()
 {
-	return Ship(ContainerShip, 1);
-}
-
-TEST(load, when_1000_ships_are_generated_then_no_exception)
-{
-	Tunnel tunnel(5);
-	Coast coast(3);
-	createHarbors(coast);
-	int testNumber = 1000;
-
-	for (int i = 0; i < testNumber; i++)
-	{
-		generatorManager(coast, tunnel, 0);
-	}
-	std::this_thread::sleep_for(std::chrono::seconds(44));
-	
-	SUCCEED();
+	static int x = 0;
+	x = ++x % amountOfTypes;
+	return Ship(static_cast<ShipType>(x), 1);
 }
 
 void function1(Tunnel& tunnel)
@@ -80,6 +83,22 @@ TEST(mutex, WhenTwoFunctionsAreCalledImmediatelyThenNoException)
 	thread1.detach();
 	thread2.detach();
 	std::this_thread::sleep_for(std::chrono::seconds(3));
+
+	SUCCEED();
+}
+
+TEST(load, when_1000_ships_are_generated_then_no_exception)
+{
+	Tunnel tunnel(5);
+	Coast coast(3);
+	createHarbors(coast);
+	int testNumber = 1000;
+
+	for (int i = 0; i < testNumber; i++)
+	{
+		generatorManager(coast, tunnel, 0);
+	}
+	std::this_thread::sleep_for(std::chrono::seconds(50));
 
 	SUCCEED();
 }
