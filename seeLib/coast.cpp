@@ -39,7 +39,6 @@ bool Coast::addShip(const Ship& ship)
 
 bool Coast::hasSpace(const ShipType& type) const
 {
-	std::lock_guard<std::mutex> guard(shipsMutex);
 	return !(ships.at(type).size() == spaceLimit);
 }
 

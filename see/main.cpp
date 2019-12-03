@@ -15,6 +15,8 @@ int main()
 	Coast coast(3);
 	createHarbors(coast);
 
+	srand((unsigned)time(nullptr));
+
 	while (true)
 	{
 		generatorManager(coast, tunnel);

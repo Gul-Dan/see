@@ -1,6 +1,6 @@
 #pragma once
 
-const unsigned amoutOfTypes = 5;
+const unsigned amountOfTypes = 5;
 
 enum ShipType
 {
