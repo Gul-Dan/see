@@ -1,10 +1,8 @@
 #pragma once
 
-const unsigned amountOfTypes = 5;
-
 enum ShipType
 {
-	ContainerShip, BulkCarrier, TankerShip, OffshoreVessel, FishingVessel
+	ContainerShip, BulkCarrier, TankerShip, OffshoreVessel, FishingVessel, AmountOfTypes
 };
 
 //stores type and capacity of ship
@@ -18,3 +16,21 @@ struct Ship
 	int capacity;
 	ShipType type;
 };
+
+inline std::string shipTypeToString(const ShipType& type)
+{
+	switch (type)
+	{
+	case 0:
+		return "ContainerShip";
+	case 1:
+		return "BulkCarrier";
+	case 2:
+		return "TankerShip";
+	case 3:
+		return "OffshoreVessel";
+	case 4:
+		return "FishingVessel";
+	}
+	return "";
+}

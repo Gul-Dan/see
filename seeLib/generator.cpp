@@ -4,8 +4,8 @@
 //generates random ships
 Ship generate()
 {
-	ShipType type = static_cast<ShipType>(rand() % amountOfTypes); //from 0 to 4
-	int capacity = (rand() % 5 + 1) * 3;
+	ShipType type = static_cast<ShipType>(rand() % AmountOfTypes);
+	int capacity = (rand() % 5 + 1) * 30; // 30-150
 
 	return Ship(type, capacity);
 }

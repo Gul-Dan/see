@@ -44,6 +44,7 @@ bool Coast::hasSpace(const ShipType& type) const
 
 void Coast::startLoading(const Ship& ship, int harbor)
 {
+	deleteShip(ship.type);
 	std::cout << "Start of loading " << shipTypeToString(ship.type) << ", capacity " << ship.capacity << "\n";
 	harbors.at(ship.type)[harbor]->load(ship);
 }
@@ -51,28 +52,12 @@ void Coast::startLoading(const Ship& ship, int harbor)
 void Coast::deleteShip(const ShipType& type)
 {
 	std::lock_guard<std::mutex> guard(shipsMutex);
-	ships.at(type).pop();
+	auto& queue = ships.at(type);
+	if (queue.size())
+		queue.pop();
 }
 
-std::string Coast::shipTypeToString(const ShipType& type) const
-{
-	switch (type)
-	{
-	case 0:
-		return "ContainerShip";
-	case 1:
-		return "BulkCarrier";
-	case 2:
-		return "TankerShip";
-	case 3:
-		return "OffshoreVessel";
-	case 4:
-		return "FishingVessel";
-	}
-	return "";
-}
-
-int Coast::findFreeHarbor(const ShipType& type)
+int Coast::findFreeHarbor(const ShipType& type) //todo: Can this function be const?
 {
 	std::lock_guard<std::mutex> guard(loadingMutex);
 	for (size_t i = 0; i < harbors.at(type).size(); i++)
@@ -80,7 +65,6 @@ int Coast::findFreeHarbor(const ShipType& type)
 		if (!harbors.at(type)[i]->isLoading())
 		{
 			harbors.at(type)[i]->setIsLoading();
-			deleteShip(type);
 			return static_cast<int>(i);
 		}
 	}

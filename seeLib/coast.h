@@ -22,7 +22,7 @@ public:
 	virtual bool addShip(const Ship&) = 0; 
 	virtual bool hasSpace(const ShipType&) const = 0;
 	//if harbor is free - send ship to it
-	virtual void startLoading(const Ship&, int) = 0;
+	virtual void startLoading(const Ship&, int) = 0;//todo: what is int? why harbor is int but not a Harbor?
 	//finds harbor that is not loading - return its index or -1 otherwise
 	virtual int findFreeHarbor(const ShipType&) = 0;
 	virtual void deleteShip(const ShipType&) = 0;
@@ -45,7 +45,6 @@ public:
 	int findFreeHarbor(const ShipType&) override;
 	void deleteShip(const ShipType&) override;
 	void addHarbor(std::unique_ptr<Harbor>) override;
-	std::string shipTypeToString(const ShipType&) const;
 	//statistics? add starting information about harbors and maybe ships. maybe connect it with client
 	//todo: statistics: new class + add in main into statistics array
 };

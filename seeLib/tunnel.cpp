@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "tunnel.h"
+#include <chrono>
 
 Tunnel::Tunnel(const unsigned space)
 	: spaceLimit(space)
@@ -22,14 +23,11 @@ Ship Tunnel::sendShip(ICoast& coast)
 	return ship;
 }
 
-void Tunnel::addShip(const Ship& ship)
+bool Tunnel::addShip(const Ship& ship)
 {
 	std::lock_guard<std::mutex> guard(shipsMutex);
-	ships.push(ship);
-}
-
-bool Tunnel::hasSpace() const
-{
-	//todo: should we add mutex ahead?
-	return !(ships.size() == spaceLimit);
+	bool hadSpace = ships.size() < spaceLimit;
+	if (hadSpace)
+		ships.push(ship);
+	return hadSpace;
 }

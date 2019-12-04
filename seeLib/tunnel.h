@@ -11,8 +11,7 @@ public:
 	//tries to send ship to Coast
 	virtual Ship sendShip(ICoast&) = 0;
 	//adds ship from generator
-	virtual void addShip(const Ship&) = 0;
-	virtual bool hasSpace() const = 0;
+	virtual bool addShip(const Ship&) = 0;
 };
 
 class Tunnel : public ITunnel
@@ -24,6 +23,5 @@ class Tunnel : public ITunnel
 public:
 	Tunnel(const unsigned);
 	Ship sendShip(ICoast&) override;
-	void addShip(const Ship&) override;
-	bool hasSpace() const override;
+	bool addShip(const Ship&) override;
 };

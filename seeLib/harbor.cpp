@@ -9,7 +9,7 @@ Harbor::Harbor(const ShipType& type)
 
 void Harbor::load(const Ship& ship)
 {
-	std::this_thread::sleep_for(std::chrono::seconds(ship.capacity));
+	std::this_thread::sleep_for(std::chrono::milliseconds(ship.capacity));
 	setIsLoading(false);
 }
 
@@ -25,6 +25,8 @@ ShipType Harbor::getType() const
 
 void Harbor::setIsLoading(bool value)
 {
+	if (isLoading_ && value)
+		throw "";
 	isLoading_ = value;
 }
 
